@@ -4,8 +4,8 @@ import { Modalize } from 'react-native-modalize'
 import ratingStar from '../../assets/rating-star.png'
 import Science from '../../assets/science-image.png'
 
-const QuizCard = ({ onPress, title, createdAt, questionNumber }) => {
-
+const QuizCard = ({ onPress, title,quizId, createdAt, questionNumber }) => {
+    
     const modalRef = useRef(null)
 
     const openModal = () => {
@@ -54,7 +54,7 @@ const QuizCard = ({ onPress, title, createdAt, questionNumber }) => {
                 </View>
                 <TouchableOpacity
                     style={{ paddingHorizontal: 20, backgroundColor: '#93AADA', justifyContent: 'center', alignItems: 'center', height: 25, borderRadius: 5, marginTop: 15 }}
-                    onPress={onPress}
+                    onPress={()=>onPress(quizId)}
                 >
                     <Text style={{ fontSize: 12, color: 'white' }}>
                         Play Now

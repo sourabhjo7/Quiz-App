@@ -7,10 +7,14 @@ import axios from 'axios';
 
 const Tab = createMaterialTopTabNavigator();
 
-const QuizScreen = () =>{
+const QuizScreen = ({navigation}) =>{
     const [data, setData] = useState({})
+    const onPlay = (id) => {
+        navigation.navigate('QuizScreen',{quizId:id})
+    }
 
     const fetchData = async () => {
+        
         try {
             const token = await AsyncStorage.getItem('token')
             const url = 'http://yesquiz-stage.eba-gwufjrqj.ap-south-1.elasticbeanstalk.com/api/v1/quiz'
@@ -38,7 +42,7 @@ const QuizScreen = () =>{
               renderItem={({ item }) => {
                 // console.log(item)
                 return (
-                    <QuizCard title={item.name} createdAt={item.created_at} />
+                    <QuizCard onPress={onPlay} quizId={item._id} title={item.name} createdAt={item.created_at} />
                 )
               }}
             />

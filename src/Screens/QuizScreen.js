@@ -6,7 +6,9 @@ import { quizScreenStyles } from '../Styles/QuizScreenStyles';
 import { QuestionContext } from '../Constants/ApiContext';
 import Ionicon from 'react-native-vector-icons/Ionicons'
 
-const QuizScreen = ({ navigation }) => {
+const QuizScreen = ({ route,navigation }) => {
+    const {quizId}=route.params;// id of quiz from navigation 
+    console.log("quizId",quizId);
     const [timeLeft, setTimeLeft] = useState(59);
     const [timeTaken, settimeTaken] = useState(0);
     const [disable, setDisable] = useState(false);
@@ -50,8 +52,8 @@ const QuizScreen = ({ navigation }) => {
                });
            }
        }
-
-        console.log(quizData);
+       console.log("quizData-->",quizData);
+       // posting quiz data to server and then the result to result page as props 
       navigation.navigate('Result');
     };
     // console.log(questions)
@@ -81,28 +83,6 @@ const QuizScreen = ({ navigation }) => {
         setFiftyFifty(false)
     }, [currentQuestionIndex]);
 
-    const data = [
-        {
-            id: 1,
-            option: 'Sustainable',
-            correct: true,
-        },
-        {
-            id: 2,
-            option: 'Economical',
-            correct: false,
-        },
-        {
-            id: 3,
-            option: 'Social',
-            correct: false,
-        },
-        {
-            id: 4,
-            option: 'None of the above',
-            correct: false,
-        },
-    ];
 
     return (
         <View style={{ ...quizScreenStyles.quizContainer }}>
