@@ -17,6 +17,7 @@ const QuizScreen = ({ route,navigation }) => {
     const [fiftyFifty, setFiftyFifty] = useState(false)
     const [disableFifty, setDisableFifty] = useState(false)
     const[quiz,setQuiz]=useState({});
+    const[quizQuestions,setQuizQuestions]=useState([]);
     const {
         getCurrentQuestion,
         getCurrentOptions,
@@ -30,7 +31,28 @@ const QuizScreen = ({ route,navigation }) => {
     const getCurrentQuiz = async () => {
         const {quizId}=route.params;
         const quiz = await getQuizbyID(quizId);
-        setQuiz(quiz.quiz);
+        console.log(quiz.quiz["Business Communication"]);
+        const extractedQuestions = Object.entries(quiz.quiz).flatMap(
+            subjectQuestions => {
+              return subjectQuestions[1].map(questionObj => ({
+                //save Object keys as array
+                key: subjectQuestions[0],
+                answer: '',
+                options: questionObj.options,
+                question: questionObj.question,
+              }));
+             
+            },
+         
+          );
+          console.log("--->",extractedQuestions);
+          setQuizQuestions(extractedQuestions);
+        // for(let key in quiz.quiz){
+            
+        //     setQuizQuestions(prev => [...prev, ...quiz.quiz[key]]);
+        // }
+        
+        setQuiz(quiz);
       };
     
     const onPressOption = value => {
@@ -64,7 +86,7 @@ const QuizScreen = ({ route,navigation }) => {
        // posting quiz data to server and then the result to result page as props 
       navigation.navigate('Result');
     };
-    // console.log(questions)
+    
 
     const startTimer = () => {
         timer = setTimeout(() => {
@@ -78,7 +100,7 @@ const QuizScreen = ({ route,navigation }) => {
     };
 useEffect(() => {
     getCurrentQuiz();
-    console.log("quiz",quiz);
+   
 
 }, []);
 
@@ -102,7 +124,7 @@ useEffect(() => {
         <View style={{ ...quizScreenStyles.quizContainer }}>
             <View>
                 <View style={quizScreenStyles.headingContainer}>
-                    <Text style={quizScreenStyles.heading}>{quizName}</Text>
+                    <Text style={quizScreenStyles.heading}>{quiz?.name}</Text>
                     <View style={quizScreenStyles.currentScoreContainer}>
                         <Image source={ratingStar} style={{ width: 17, height: 17 }} />
                         <Text style={quizScreenStyles.currentScore}>00</Text>
@@ -170,7 +192,7 @@ useEffect(() => {
             </View>
             <View style={quizScreenStyles.optionsContainer}>
                 <FlatList
-                    data={getCurrentOptions()}
+                    data={quizQuestions?.options}
                     keyExtractor={item => item.id}
                     renderItem={({ item }) => {
                         // console.log(item)
