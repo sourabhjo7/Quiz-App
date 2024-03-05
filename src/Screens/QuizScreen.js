@@ -5,10 +5,10 @@ import ratingStar from '../../assets/rating-star.png';
 import { quizScreenStyles } from '../Styles/QuizScreenStyles';
 import { QuestionContext } from '../Constants/ApiContext';
 import Ionicon from 'react-native-vector-icons/Ionicons'
-
+import { getQuizbyID } from '../Services/Quiz';
+/*{"Business Communication": [{"options": [Array], "question": "Question 1"}, {"options": [Array], "question": "Question 2"}, {"options": [Array], "question": "Question 3"}], "Business Environment": [{"options": [Array], "question": "Question 1"}, {"options": [Array], "question": "Question 2"}, {"options": [Array], "question": "Question 3"}], "Current Affairs": [{"options": [Array], "question": "Question 1"}, {"options": [Array], "question": "Question 2"}, {"options": [Array], "question": "Question 3"}], "Economics": [{"options": [Array], "question": "Question 1"}, {"options": [Array], "question": "Question 2"}, {"options": [Array], "question": "Question 3"}], "Legal Aptitude": [{"options": [Array], "question": "Question 1"}, {"options": [Array], "question": "Question 2"}, {"options": [Array], "question": "Question 3"}], "Logical Reasoning": [{"options": [Array], "question": "Question 1"}, {"options": [Array], "question": "Question 2"}, {"options": [Array], "question": "Question 3"}]} */
 const QuizScreen = ({ route,navigation }) => {
-    const {quizId}=route.params;// id of quiz from navigation 
-    console.log("quizId",quizId);
+    // id of quiz from navigation 
     const [timeLeft, setTimeLeft] = useState(59);
     const [timeTaken, settimeTaken] = useState(0);
     const [disable, setDisable] = useState(false);
@@ -16,6 +16,7 @@ const QuizScreen = ({ route,navigation }) => {
     const [randOption2, setRandOption2] = useState()
     const [fiftyFifty, setFiftyFifty] = useState(false)
     const [disableFifty, setDisableFifty] = useState(false)
+    const[quiz,setQuiz]=useState({});
     const {
         getCurrentQuestion,
         getCurrentOptions,
@@ -25,7 +26,13 @@ const QuizScreen = ({ route,navigation }) => {
         setCorrectOption,
         quizName
     } = useContext(QuestionContext);
-
+    
+    const getCurrentQuiz = async () => {
+        const {quizId}=route.params;
+        const quiz = await getQuizbyID(quizId);
+        setQuiz(quiz.quiz);
+      };
+    
     const onPressOption = value => {
         setCorrectOption(value);
         // console.log(questions);
@@ -37,6 +44,7 @@ const QuizScreen = ({ route,navigation }) => {
         setRandOption1(Math.floor(Math.random() * 4))
         setRandOption2(Math.floor(Math.random() * 4))
     }
+    // console.log(quiz);
     const onQuizSubmit = () => {
         let quizData = {};
        for (let i = 0; i < questions.length; i++) {
@@ -68,8 +76,14 @@ const QuizScreen = ({ route,navigation }) => {
             settimeTaken(timeTaken + 1);
         }, 1000);
     };
+useEffect(() => {
+    getCurrentQuiz();
+    console.log("quiz",quiz);
+
+}, []);
 
     useEffect(() => {
+       
         startTimer();
         if (timeLeft === 0) {
             handleNextQuestion();
