@@ -14,7 +14,8 @@ export const QuestionProvider = ({children}) => {
   const [score, setScore] = useState(0);
   const [timer, setTimer] = useState(59);
   const [quizName, setQuizName] = useState('');
-  const [quizData,setQuizData]=useState({});
+  const [quizData, setQuizData] = useState({});
+  const [quizzes, setQuizzes] = useState([]);
 
   // const fetchData = async () => {
   //   try {
@@ -120,14 +121,20 @@ export const QuestionProvider = ({children}) => {
   };
 
   const getCurrentQuestion = () => {
-    return questions[currentQuestionIndex].question;
+    return (
+      questions[currentQuestionIndex] &&
+      questions[currentQuestionIndex].question
+    );
   };
 
   const getCurrentOptions = () => {
-    return questions[currentQuestionIndex].options;
+    return (
+      questions[currentQuestionIndex] && questions[currentQuestionIndex].options
+    );
   };
   const setCorrectOption = value => {
-    questions[currentQuestionIndex].answer = value;
+    if (questions[currentQuestionIndex])
+      questions[currentQuestionIndex].answer = value;
     console.log(questions[currentQuestionIndex]);
   };
 
@@ -145,7 +152,9 @@ export const QuestionProvider = ({children}) => {
         handleNextQuestion,
         setCorrectOption,
         quizName,
-        setQuizName
+        setQuizName,
+        quizzes,
+        setQuizzes,
       }}>
       {children}
     </QuestionContext.Provider>
